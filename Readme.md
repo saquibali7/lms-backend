@@ -37,6 +37,15 @@ NEW_DATABASE=true if you want fresh database at every run
 
 ---
 
+### Notes Routes
+
+| Use        | URL                                 | Method | Params            | Access | Status |
+| ---------- | ----------------------------------- | ------ | ----------------- | ------ | ------ |
+| Post Notes | /api/notes/post_notes/:classroom_id | POST   | name, description | PUBLIC | OK     |
+| Get Notes  | /api/notes/get_notes/:classroom_id  | GET    | \_\_              | PUBLIC | OK     |
+
+---
+
 ### DEVELOPER/ADMIN ROUTES
 
 They are just for debugging purposes
