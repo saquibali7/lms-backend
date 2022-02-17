@@ -1,5 +1,13 @@
 # REST API server for LMS project
 
+## ENV Vars
+
+```env
+DATABASE_URL=Your_Postgres_Database_URL
+APP_SECRET=token_encryption_secret_for_jwt
+NEW_DATABASE=true if you want fresh database at every run
+```
+
 ## API DOCS
 
 ### Teacher Routes
