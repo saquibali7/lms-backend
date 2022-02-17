@@ -2,6 +2,10 @@ const client = require("../config/DB");
 const { v4: uuidv4 } = require("uuid");
 const { Encrypt, Decrypt } = require("../securityConfig/crypto");
 const { getToken } = require("../securityConfig/jwt");
+// dev
+const { faker } = require("@faker-js/faker");
+
+// ---
 const getUsers = async (req, res, next) => {
   const query = `select * from teachers`;
   console.log(client);
@@ -62,8 +66,31 @@ const login = async (req, res, next) => {
   }
 };
 
+const addFakeUsers = async (req, res, next) => {
+  const { number } = req.body;
+  const query = `insert into teachers(teacher_id, name, email, password) values`;
+  const values = [];
+  const addedUsers = [];
+  for (let i = 0; i < number; i++) {
+    const name = faker.name.findName();
+    const email = faker.internet.email();
+    const password = await Encrypt("admin");
+    values.push(`('${uuidv4()}', '${name}', '${email}', '${password}')`);
+    addedUsers.push({ name, email, password: "admin" });
+  }
+  const queryString = query + values.join(",");
+  try {
+    const result = await client.query(queryString);
+    res.status(200).json(addedUsers);
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ message: "Error" });
+  }
+};
+
 module.exports = {
   getUsers,
   signup,
   login,
+  addFakeUsers,
 };

@@ -5,7 +5,7 @@ const connectToClient = async () => {
     await client.connect();
     // Drop DATABASE if exists lms;
     const query = `
-    Drop DATABASE if exists lms;
+    ${process.env.NEW_DATABASE === "true" ? "DROP DATABASE IF EXISTS lms;" : ""}
     CREATE DATABASE IF NOT EXISTS lms;
     Use lms;
     CREATE TABLE IF NOT EXISTS teachers (
@@ -26,6 +26,7 @@ const connectToClient = async () => {
     CREATE TABLE IF NOT EXISTS classrooms (
         classroom_id  varchar(255) PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
+        section VARCHAR(255),
         description VARCHAR(255),
         teacher_id varchar(255) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
@@ -35,6 +36,14 @@ const connectToClient = async () => {
         student_id  varchar(255) NOT NULL,
         classroom_id  varchar(255) NOT NULL,
         FOREIGN KEY (student_id) REFERENCES students(student_id),
+        FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id),
+        created_at TIMESTAMP DEFAULT NOW()
+        );
+    CREATE TABLE IF NOT EXISTS notes (
+        notes_id VARCHAR(255) PRIMARY KEY,
+        classroom_id VARCHAR(255) NOT NULL, 
+        type VARCHAR(255) NOT NULL,
+        body varchar(255) NOT NULL,
         FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id),
         created_at TIMESTAMP DEFAULT NOW()
         );

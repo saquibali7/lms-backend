@@ -6,6 +6,7 @@ const logger = require("morgan");
 const teacherRouter = require("./routes/teacher.routes");
 const studentRouter = require("./routes/student.routes");
 const classroomRouter = require("./routes/classroom.routes");
+const notesRouter = require("./routes/notes.routes");
 const cors = require("cors");
 
 const port = process.env.PORT || 3000;
@@ -26,7 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/teacher", teacherRouter);
 app.use("/api/classroom", classroomRouter);
 app.use("/api/student", studentRouter);
-
+app.use("/api/notes", notesRouter);
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });

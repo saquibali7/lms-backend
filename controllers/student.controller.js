@@ -2,6 +2,10 @@ const client = require("../config/DB");
 const { v4: uuidv4 } = require("uuid");
 const { Encrypt, Decrypt } = require("../securityConfig/crypto");
 const { getToken } = require("../securityConfig/jwt");
+// dev
+const { faker } = require("@faker-js/faker");
+
+// ---
 const getUsers = async (req, res, next) => {
   const query = `select * from students`;
   console.log(client);
@@ -15,28 +19,28 @@ const getUsers = async (req, res, next) => {
 };
 
 const signup = async (req, res, next) => {
-    const { name, email, password } = req.body;
-  
-    const queryStudent = `select * from students where email = '${email}'`;
-    const queryTeacher = `select * from teachers where email = '${email}'`;
-    try {
-      const resultStudent = await client.query(queryStudent);
-      const resultTeacher = await client.query(queryTeacher);
-      if (resultStudent.rowCount > 0) {
-        res.status(400).json({ message: "Email already used by a student" });
-      } else if (resultTeacher.rowCount > 0) {
-        res.status(400).json({ message: "Email already used by a teacher" });
-      } else {
-        const passwordEncrypted = await Encrypt(password);
-        const query = `insert into students(student_id, name, email, password) values('${uuidv4()}', '${name}', '${email}', '${passwordEncrypted}')`;
-        const result = await client.query(query);
-        res.json(result);
-      }
-    } catch (e) {
-      console.log(e);
-      res.status(400).json({ message: "Error" });
+  const { name, email, password } = req.body;
+
+  const queryStudent = `select * from students where email = '${email}'`;
+  const queryTeacher = `select * from teachers where email = '${email}'`;
+  try {
+    const resultStudent = await client.query(queryStudent);
+    const resultTeacher = await client.query(queryTeacher);
+    if (resultStudent.rowCount > 0) {
+      res.status(400).json({ message: "Email already used by a student" });
+    } else if (resultTeacher.rowCount > 0) {
+      res.status(400).json({ message: "Email already used by a teacher" });
+    } else {
+      const passwordEncrypted = await Encrypt(password);
+      const query = `insert into students(student_id, name, email, password) values('${uuidv4()}', '${name}', '${email}', '${passwordEncrypted}')`;
+      const result = await client.query(query);
+      res.json(result);
     }
-  };
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ message: "Error" });
+  }
+};
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -62,8 +66,31 @@ const login = async (req, res, next) => {
   }
 };
 
+const addFakeUsers = async (req, res, next) => {
+  const { number } = req.body;
+  const query = `insert into students(student_id, name, email, password) values`;
+  const values = [];
+  const addedUsers = [];
+  for (let i = 0; i < number; i++) {
+    const name = faker.name.findName();
+    const email = faker.internet.email();
+    const password = await Encrypt("admin");
+    values.push(`('${uuidv4()}', '${name}', '${email}', '${password}')`);
+    addedUsers.push({ name, email, password: "admin" });
+  }
+  const queryString = query + values.join(",");
+  try {
+    const result = await client.query(queryString);
+    res.status(200).json(addedUsers);
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ message: "Error" });
+  }
+};
+
 module.exports = {
   getUsers,
   signup,
   login,
+  addFakeUsers,
 };

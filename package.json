@@ -18,5 +18,8 @@
     "pg-connection-string": "^2.5.0",
     "pg-promise": "^10.11.1",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.6"
   }
 }
