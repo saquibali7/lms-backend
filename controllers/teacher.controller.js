@@ -27,9 +27,9 @@ const signup = async (req, res, next) => {
     const resultStudent = await client.query(queryStudent);
     const resultTeacher = await client.query(queryTeacher);
     if (resultStudent.rowCount > 0) {
-      res.status(400).json({ message: "Email already used by a student" });
+      res.status(400).send({ message: "Email already used by a student" });
     } else if (resultTeacher.rowCount > 0) {
-      res.status(400).json({ message: "Email already used by a teacher" });
+      res.status(400).send({ message: "Email already used by a teacher" });
     } else {
       const passwordEncrypted = await Encrypt(password);
       const query = `insert into teachers(teacher_id, name, email, password) values('${uuidv4()}', '${name}', '${email}', '${passwordEncrypted}')`;
@@ -53,12 +53,17 @@ const login = async (req, res, next) => {
       if (password === passwordDecrypted) {
         const token = await getToken({ userId: user.teacher_id });
         res.cookie("token", token);
-        res.json({ message: "Login Successful" });
+        res.json({
+          user: user,
+          type: "teacher",
+          token: token,
+          message: "Login Successful",
+        });
       } else {
-        res.status(400).json({ message: "Invalid Password" });
+        res.status(400).send({ message: "Invalid Password" });
       }
     } else {
-      res.status(400).json({ message: "Invalid Email" });
+      res.status(400).send({ message: "Invalid Email" });
     }
   } catch (e) {
     console.log(e);
