@@ -28,12 +28,15 @@ NEW_DATABASE=true if you want fresh database at every run
 
 ---
 
-### Classes Routes
+### Classroom Routes
 
-| Use           | URL                    | Method | Params            | Access          | Status |
-| ------------- | ---------------------- | ------ | ----------------- | --------------- | ------ |
-| Create Class  | /api/classroom/create  | POST   | name, description | Private/Teacher | OK     |
-| Get all Class | /api/classroom/get_all | GET    | \_\_              | Private/Teacher | OK     |
+| Use                        | URL                    | Method | Params            | Access          | Status |
+| -------------------------- | ---------------------- | ------ | ----------------- | --------------- | ------ |
+| Get classroom by id        | /api/classroom/:id     | GET    | \_\_              | Private         | OK     |
+| Create classroom           | /api/classroom/create  | POST   | name, description | Private/Teacher | OK     |
+| Get all created classrooms | /api/classroom/created | GET    | \_\_              | Private/Teacher | OK     |
+| Join a classroom           | /api/classroom/created | POST   | \_\_              | Private/Student | OK     |
+| Get all joined Classroom   | /api/classroom/created | GET    | \_\_              | Private/Student | OK     |
 
 ---
 

@@ -1,9 +1,14 @@
 const { Client } = require("pg");
 const client = new Client(process.env.DATABASE_URL);
+
 const connectToClient = async () => {
   try {
     await client.connect();
-    // Drop DATABASE if exists lms;
+    if (process.env.NEW_DATABASE === "true") {
+      console.log("==================================");
+      console.log("WARNING!! DROPPING OLD DATABASE...");
+      console.log("==================================");
+    }
     const query = `
     ${process.env.NEW_DATABASE === "true" ? "DROP DATABASE IF EXISTS lms;" : ""}
     CREATE DATABASE IF NOT EXISTS lms;
@@ -50,7 +55,8 @@ const connectToClient = async () => {
         `;
 
     await client.query(query);
-    console.log("DB and Tables created");
+    console.log("Connected to database, you are good to go!");
+
   } catch (e) {
     console.log(e);
   }

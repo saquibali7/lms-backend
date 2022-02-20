@@ -51,11 +51,12 @@ const login = async (req, res, next) => {
     if (user) {
       const passwordDecrypted = await Decrypt(user.password);
       if (password === passwordDecrypted) {
-        const token = await getToken({ userId: user.student_id });
+        const token = await getToken({ userId: user.student_id, userType: "student" });
         res.cookie("token", token);
+        const { student_id, name, email } = user;
 
         res.json({
-          user: user,
+          user: { student_id, name, email },
           type: "student",
           token: token,
           message: "Login Successful",
